@@ -1,44 +1,71 @@
-import { RECORDING_STATUS, RECORDING } from "../../hooks/const";
+import { useRef } from "preact/hooks";
 
-type Props = {
-  recording: RECORDING;
-  setIsRunning: (value: boolean) => void;
-  setRecording: (value: RECORDING) => void;
+type Options = {
+  fps: number;
+  duration: number;
 };
 
-export const Download = ({ recording, setIsRunning, setRecording }: Props) => {
+type Props = {
+  recording: boolean;
+  totalFrames: number;
+  recordOptions: Options;
+  setIsRunning: (value: boolean) => void;
+  setRecording: (value: boolean) => void;
+  changeFrames: (e: Event) => void;
+  setRecordOptions: ({ fps, duration }: Options) => void;
+};
+
+export const Download = ({
+  recording,
+  totalFrames,
+  recordOptions,
+  setIsRunning,
+  setRecording,
+  changeFrames,
+  setRecordOptions,
+}: Props) => {
+  const fpsRef = useRef<HTMLInputElement>(null);
+  const durationRef = useRef<HTMLInputElement>(null);
+
   return (
     <div>
       <h2>Download</h2>
       <div>
-        <input type="radio" name="fileType" id="gif" value="gif" checked />
-        <label for="gif">Gif</label>
+        <label for="frames">Frames</label>
+        <input
+          type="number"
+          id="frames"
+          value={totalFrames}
+          onChange={changeFrames}
+        />
       </div>
       <div>
-        <input type="radio" name="fileType" id="webm" value="webm" />
-        <label for="webm">WebM</label>
+        <label for="fps">FPS</label>
+        <input ref={fpsRef} type="number" id="fps" value={recordOptions.fps} />
       </div>
       <div>
-        <input type="radio" name="fileType" id="jpg" value="jpg" />
-        <label for="jpg">JPEG</label>
+        <label for="duration">Duration</label>
+        <input
+          ref={durationRef}
+          type="number"
+          id="duration"
+          value={recordOptions.duration}
+        />
       </div>
       <div>
-        <input type="radio" name="fileType" id="png" value="png" />
-        <label for="png">PNG</label>
-      </div>
-      <div>
-        <label for="frame">Frame</label>
-        <input type="number" id="frame" value="120" />
-      </div>
-      <div>
-        <p>Recodring: {recording}</p>
         <button
           onClick={() => {
+            if (fpsRef.current && durationRef.current) {
+              setRecordOptions({
+                fps: parseInt(fpsRef.current.value),
+                duration: parseInt(durationRef.current.value),
+              });
+            }
             setIsRunning(false);
-            setRecording(RECORDING_STATUS.RECORDING);
+            setRecording(true);
           }}
         >
-          rec state
+          {recording ? "Recording..." : "Record"}
         </button>
       </div>
     </div>

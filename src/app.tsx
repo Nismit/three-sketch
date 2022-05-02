@@ -3,7 +3,6 @@ import { useThree } from "./hooks/useThree";
 import { useTimeline } from "./hooks/useTimeline";
 import { useEventListener } from "./hooks/useEventListener";
 import { useToggle } from "./hooks/useToggle";
-import { RECORDING_STATUS } from "./hooks/const";
 import { Timeline } from "./components/Timeline";
 import { Modal } from "./components/Modal";
 import { Help } from "./components/Help";
@@ -50,7 +49,11 @@ export function App() {
   };
   useEventListener("keydown", keyHandler);
 
-  const [threeRef] = useThree({ time, recording });
+  const { threeRef, recordOptions, setRecordOptions } = useThree({
+    time,
+    recording,
+    setRecording,
+  });
 
   return (
     <>
@@ -84,12 +87,16 @@ export function App() {
       <Modal
         isActive={downloadModalToggle}
         toggleModal={downloadModalChangeToggle}
-        preventClose={recording === RECORDING_STATUS.RECORDING}
+        preventClose={recording}
       >
         <Download
           recording={recording}
+          totalFrames={totalFrames}
+          recordOptions={recordOptions}
           setIsRunning={setIsRunning}
           setRecording={setRecording}
+          changeFrames={changeFrames}
+          setRecordOptions={setRecordOptions}
         />
       </Modal>
     </>

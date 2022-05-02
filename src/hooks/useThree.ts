@@ -1,29 +1,19 @@
-import { useRef, useEffect } from "preact/hooks";
+import { useRef, useEffect, useState } from "preact/hooks";
 import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
 import { useEventListener } from "./useEventListener";
-import { RECORDING_STATUS, RECORDING } from "./const";
 import { boxObject } from "../utils/boxObject";
 import { Pane } from "tweakpane";
 
 type Props = {
   time: number;
-  recording: RECORDING;
+  recording: boolean;
+  setRecording: (value: boolean) => void;
 };
 
 const pane = new Pane();
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, 1, 0.1, 1000);
 const renderer = new WebGLRenderer();
-
-// Recording
-const options = {
-  fps: 50,
-  duration: 1000,
-};
-const framesData: any = {};
-const frameDuration = 1e3 / options.fps;
-const frames = Math.round(options.duration / frameDuration);
-const framesNameLength = Math.ceil(Math.log10(frames));
 
 const PARAMS = {
   factor: 123,
@@ -39,8 +29,12 @@ pane.addInput(PARAMS, "color");
 camera.position.z = 3;
 const cube = boxObject();
 
-export const useThree = ({ time, recording }: Props) => {
+export const useThree = ({ time, recording, setRecording }: Props) => {
   const threeRef = useRef<HTMLDivElement>(null);
+  const [recordOptions, setRecordOptions] = useState({
+    fps: 60,
+    duration: 1000,
+  });
 
   const resizeHandler = () => {
     if (threeRef.current) {
@@ -76,6 +70,7 @@ export const useThree = ({ time, recording }: Props) => {
         scene.remove(cube);
         renderer.dispose();
         threeRef.current.removeChild(renderer.domElement);
+        pane.dispose();
       }
     };
   }, [threeRef]);
@@ -85,13 +80,15 @@ export const useThree = ({ time, recording }: Props) => {
   }, [time]);
 
   useEffect(() => {
-    if (recording === RECORDING_STATUS.INITIAL) {
-      console.log("Recording Initialize");
-    }
-
-    if (recording === RECORDING_STATUS.RECORDING) {
+    if (recording) {
       console.log("Start Recording");
-      // mediaRecorder.start();
+
+      console.log("Options", recordOptions);
+
+      const framesData: any = {};
+      const frameDuration = 1e3 / recordOptions.fps;
+      const frames = Math.round(recordOptions.duration / frameDuration);
+      const framesNameLength = Math.ceil(Math.log10(frames));
 
       for (let i = 0; i < frames; i++) {
         const timestamp = i * frameDuration;
@@ -103,9 +100,7 @@ export const useThree = ({ time, recording }: Props) => {
         framesData[frameName] = renderer.domElement.toDataURL("image/png");
       }
 
-      console.log("frameData", framesData);
-
-      const fileName = `capture.json`;
+      const fileName = "capture.json";
       const a = document.createElement("a");
       document.body.appendChild(a);
       a.style.display = "none";
@@ -116,13 +111,10 @@ export const useThree = ({ time, recording }: Props) => {
       a.href = jsonURL;
       a.download = fileName;
       a.click();
-    }
 
-    if (recording === RECORDING_STATUS.RECORDED) {
-      console.log("Stop Recording");
-      // mediaRecorder.stop();
+      setRecording(false);
     }
   }, [recording]);
 
-  return [threeRef];
+  return { threeRef, recordOptions, setRecordOptions };
 };
