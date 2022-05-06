@@ -51,6 +51,7 @@ export function App() {
 
   const { threeRef, recordOptions, setRecordOptions } = useThree({
     time,
+    totalFrames,
     recording,
     setRecording,
   });

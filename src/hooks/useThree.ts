@@ -2,45 +2,40 @@ import { useRef, useEffect, useState } from "preact/hooks";
 import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
 import { useEventListener } from "./useEventListener";
 import { boxObject } from "../utils/boxObject";
-import { Pane } from "tweakpane";
+import baseMesh from "../utils/baseMesh";
 
 type Props = {
   time: number;
+  totalFrames: number;
   recording: boolean;
   setRecording: (value: boolean) => void;
 };
 
-const pane = new Pane();
 const scene = new Scene();
-const camera = new PerspectiveCamera(75, 1, 0.1, 1000);
+const camera = new PerspectiveCamera(75, 1, 0.1, 10);
 const renderer = new WebGLRenderer();
 
-const PARAMS = {
-  factor: 123,
-  title: "hello",
-  color: "#ff0055",
-};
-
-pane.addInput(PARAMS, "factor");
-pane.addInput(PARAMS, "title");
-pane.addInput(PARAMS, "color");
-
 // Config
-camera.position.z = 3;
+camera.position.z = 1;
 const cube = boxObject();
+const planeObject = new baseMesh();
 
-export const useThree = ({ time, recording, setRecording }: Props) => {
+export const useThree = ({
+  time,
+  totalFrames,
+  recording,
+  setRecording,
+}: Props) => {
   const threeRef = useRef<HTMLDivElement>(null);
   const [recordOptions, setRecordOptions] = useState({
     fps: 60,
-    duration: 1000,
+    frame: totalFrames,
   });
 
   const resizeHandler = () => {
     if (threeRef.current) {
       const width = threeRef.current.clientWidth;
       const height = threeRef.current.clientHeight;
-      // console.log(threeRef.current.clientHeight);
 
       renderer.setSize(width, height);
       renderer.setPixelRatio(window.devicePixelRatio);
@@ -51,8 +46,8 @@ export const useThree = ({ time, recording, setRecording }: Props) => {
   };
 
   const render = () => {
-    cube.rotation.x += 0.01;
-    cube.rotation.y += 0.01;
+    // cube.rotation.x += 0.01;
+    // cube.rotation.y += 0.01;
     renderer.render(scene, camera);
   };
 
@@ -62,15 +57,17 @@ export const useThree = ({ time, recording, setRecording }: Props) => {
     if (threeRef.current) {
       resizeHandler();
       threeRef.current.appendChild(renderer.domElement);
-      scene.add(cube);
+      // scene.add(cube);
+      scene.add(planeObject.mesh);
     }
 
     return () => {
       if (threeRef.current) {
-        scene.remove(cube);
+        planeObject.dispose();
+        scene.remove(planeObject.mesh);
         renderer.dispose();
         threeRef.current.removeChild(renderer.domElement);
-        pane.dispose();
+        console.log("clean up");
       }
     };
   }, [threeRef]);
@@ -81,21 +78,14 @@ export const useThree = ({ time, recording, setRecording }: Props) => {
 
   useEffect(() => {
     if (recording) {
-      console.log("Start Recording");
-
       console.log("Options", recordOptions);
 
       const framesData: any = {};
-      const frameDuration = 1e3 / recordOptions.fps;
-      const frames = Math.round(recordOptions.duration / frameDuration);
+      const frames = recordOptions.frame;
       const framesNameLength = Math.ceil(Math.log10(frames));
 
       for (let i = 0; i < frames; i++) {
-        const timestamp = i * frameDuration;
-
-        // This is the function to render to canvas
         render();
-
         const frameName = i.toString().padStart(framesNameLength, "0");
         framesData[frameName] = renderer.domElement.toDataURL("image/png");
       }
