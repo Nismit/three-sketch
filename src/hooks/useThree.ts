@@ -1,8 +1,8 @@
 import { useRef, useEffect, useState } from "preact/hooks";
 import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
 import { useEventListener } from "./useEventListener";
-import { boxObject } from "../utils/boxObject";
-import baseMesh from "../utils/baseMesh";
+// import { boxObject } from "../utils/boxObject";
+import sketch from "../sketch";
 
 type Props = {
   time: number;
@@ -17,8 +17,7 @@ const renderer = new WebGLRenderer();
 
 // Config
 camera.position.z = 1;
-const cube = boxObject();
-const planeObject = new baseMesh();
+// const cube = boxObject();
 
 export const useThree = ({
   time,
@@ -37,6 +36,8 @@ export const useThree = ({
       const width = threeRef.current.clientWidth;
       const height = threeRef.current.clientHeight;
 
+      sketch.resolution = { x: width, y: height };
+
       renderer.setSize(width, height);
       renderer.setPixelRatio(window.devicePixelRatio);
 
@@ -48,6 +49,7 @@ export const useThree = ({
   const render = () => {
     // cube.rotation.x += 0.01;
     // cube.rotation.y += 0.01;
+    sketch.time = time;
     renderer.render(scene, camera);
   };
 
@@ -58,16 +60,15 @@ export const useThree = ({
       resizeHandler();
       threeRef.current.appendChild(renderer.domElement);
       // scene.add(cube);
-      scene.add(planeObject.mesh);
+      scene.add(sketch.mesh);
     }
 
     return () => {
       if (threeRef.current) {
-        planeObject.dispose();
-        scene.remove(planeObject.mesh);
+        sketch.dispose();
+        scene.remove(sketch.mesh);
         renderer.dispose();
         threeRef.current.removeChild(renderer.domElement);
-        console.log("clean up");
       }
     };
   }, [threeRef]);

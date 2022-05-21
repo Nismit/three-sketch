@@ -1,15 +1,15 @@
 type Props = {
   time: number;
   totalFrames: number;
+  // changeFrames: (e: Event) => void;
   changeTime: (e: Event) => void;
-  changeFrames: (e: Event) => void;
 };
 
 export const Timeline = ({
   time,
   totalFrames,
+  // changeFrames,
   changeTime,
-  changeFrames,
 }: Props) => {
   return (
     <div className="timeline">
@@ -33,9 +33,9 @@ export const Timeline = ({
           style={{ right: `${100 - (time / totalFrames) * 100}%` }}
         /> */}
       </div>
-      <div class="bottom">
+      {/* <div class="bottom">
         <input type="number" value={totalFrames} onChange={changeFrames} />
-      </div>
+      </div> */}
     </div>
   );
 };
