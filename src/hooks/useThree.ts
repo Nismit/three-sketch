@@ -46,10 +46,10 @@ export const useThree = ({
     }
   };
 
-  const render = () => {
+  const render = (frame?: number) => {
     // cube.rotation.x += 0.01;
     // cube.rotation.y += 0.01;
-    sketch.time = time;
+    sketch.time = frame ?? time;
     renderer.render(scene, camera);
   };
 
@@ -86,7 +86,7 @@ export const useThree = ({
       const framesNameLength = Math.ceil(Math.log10(frames));
 
       for (let i = 0; i < frames; i++) {
-        render();
+        render(i);
         const frameName = i.toString().padStart(framesNameLength, "0");
         framesData[frameName] = renderer.domElement.toDataURL("image/png");
       }
