@@ -132,7 +132,9 @@ export default class baseMesh {
   }
 
   dispose() {
+    console.log("dispose");
     this._pane.dispose();
+    this._uniform = {};
     this.mesh.clear();
     this._geometry.dispose();
     this._material.dispose();
