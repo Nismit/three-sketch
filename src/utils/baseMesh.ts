@@ -24,48 +24,6 @@ const searchObjectFromKey = (obj: Record<string, unknown>, keys: string[]) =>
     }
   }, obj) as Record<string, number> | undefined;
 
-// Want to do
-
-// add glsl code
-// add uniforms but it can be modified from Tweakpane on dev
-
-// tweak pane code
-// const PARAMS = {
-//   factor: 123,
-//   title: "hello",
-//   color: "#ff0055",
-// };
-// pane.addInput(PARAMS, "factor");
-// pane.on("change", (ev) => {
-//   console.log("changed: " + JSON.stringify(ev.value));
-// });
-
-// three js
-// uniform
-// const uniform = {
-//   name: {
-//     value: 1,
-//   },
-//   name2: {
-//     value: { x: 0, y: 0 },
-//   },
-// };
-
-// const parameters: Parameter[] = [
-//   {
-//     offset: {
-//       value: {
-//         x: 0,
-//         y: 0,
-//       },
-//     },
-//     config: {
-//       x: { step: 2 },
-//       y: { min: 0, max: 100, step: 1 },
-//     },
-//   },
-// ];
-
 export default class baseMesh {
   private _mesh: Mesh;
   private _geometry: PlaneBufferGeometry;
