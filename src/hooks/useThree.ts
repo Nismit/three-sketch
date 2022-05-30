@@ -77,6 +77,18 @@ export const useThree = ({
     render();
   }, [time]);
 
+  const handleSave = async (data: Blob) => {
+    try {
+      await fetch("http://localhost:8080", {
+        method: "POST",
+        mode: "cors",
+        body: data,
+      });
+    } catch (err: Error | unknown) {
+      console.log("Err:", err);
+    }
+  };
+
   useEffect(() => {
     if (recording) {
       console.log("Options", recordOptions);
@@ -91,17 +103,20 @@ export const useThree = ({
         framesData[frameName] = renderer.domElement.toDataURL("image/png");
       }
 
-      const fileName = "capture.json";
-      const a = document.createElement("a");
-      document.body.appendChild(a);
-      a.style.display = "none";
       const blob = new Blob([JSON.stringify(framesData)], {
         type: "application/json",
       });
-      const jsonURL = URL.createObjectURL(blob);
-      a.href = jsonURL;
-      a.download = fileName;
-      a.click();
+
+      handleSave(blob);
+
+      // const fileName = "capture.json";
+      // const a = document.createElement("a");
+      // document.body.appendChild(a);
+      // a.style.display = "none";
+      // const jsonURL = URL.createObjectURL(blob);
+      // a.href = jsonURL;
+      // a.download = fileName;
+      // a.click();
 
       setRecording(false);
     }
