@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "preact/hooks";
 
-const TOTAL_FRAMES = 600;
+const TOTAL_FRAMES = 300;
 
 // Update frame per frame
 // when drag range input, the frame update should be stopped
