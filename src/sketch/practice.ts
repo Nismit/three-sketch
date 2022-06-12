@@ -13,7 +13,11 @@ import baseMesh from "../utils/baseMesh";
 // import ray7 from "./ray7.frag";
 // import ray8 from "./ray8.frag";
 // import ray9 from "./ray9.frag";
-import raya from "./raya.frag";
+// import raya from "./raya.frag";
+// import rayb from "./rayb.frag";
+// import rayc from "./rayc.frag";
+// import rayd from "./rayd.frag";
+import raye from "./raye.frag";
 
 const params: Parameter[] = [
   // {
@@ -42,7 +46,7 @@ const params: Parameter[] = [
 ];
 
 const practicebject = new baseMesh({
-  fragment: raya,
+  fragment: raye,
   uniform: {
     pixelRatio: {
       value: window.devicePixelRatio,
