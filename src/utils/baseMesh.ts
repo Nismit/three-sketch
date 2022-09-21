@@ -1,6 +1,6 @@
 import {
   IUniform,
-  PlaneBufferGeometry,
+  PlaneGeometry,
   RawShaderMaterial,
   Mesh,
   Vector2,
@@ -26,7 +26,7 @@ const searchObjectFromKey = (obj: Record<string, unknown>, keys: string[]) =>
 
 export default class baseMesh {
   private _mesh: Mesh;
-  private _geometry: PlaneBufferGeometry;
+  private _geometry: PlaneGeometry;
   private _material: RawShaderMaterial;
   private _uniform: { [key: string]: IUniform<any> };
   private _pane: Pane;
@@ -40,7 +40,7 @@ export default class baseMesh {
     const { vertex, fragment, uniform, parameters } = props;
     this._pane = new Pane();
     this._uniform = uniform;
-    this._geometry = new PlaneBufferGeometry(2, 2);
+    this._geometry = new PlaneGeometry(2, 2);
     this._material = new RawShaderMaterial({
       uniforms: this._uniform,
       vertexShader: vertex ?? vertexTemplate,

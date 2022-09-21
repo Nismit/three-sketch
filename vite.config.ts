@@ -5,4 +5,7 @@ import glsl from "vite-plugin-glsl";
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [glsl(), preact()],
+  esbuild: {
+    logOverride: { "this-is-undefined-in-esm": "silent" },
+  },
 });
