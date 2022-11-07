@@ -1,6 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "preact/hooks";
-
-const TOTAL_FRAMES = 300;
+import { KEY_TOTAL_FRAMES } from "../const";
 
 // Update frame per frame
 // when drag range input, the frame update should be stopped
@@ -8,7 +7,7 @@ export const useTimeline = () => {
   const [time, setTime] = useState(0);
   const [recording, setRecording] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [totalFrames, setTotalFrames] = useState(TOTAL_FRAMES);
+  const [totalFrames, setTotalFrames] = useState(0);
   const rafRef = useRef<number>();
 
   const changeTime = useCallback(
@@ -33,6 +32,7 @@ export const useTimeline = () => {
         const integer =
           parseInt(e.target.value, 10) <= 0 ? 1 : parseInt(e.target.value, 10);
         setTotalFrames(integer);
+        localStorage.setItem(KEY_TOTAL_FRAMES, integer.toString());
       }
     },
     [setTotalFrames]
@@ -59,6 +59,12 @@ export const useTimeline = () => {
       }
     };
   }, [loop]);
+
+  useEffect(() => {
+    const totalFramesData = localStorage.getItem(KEY_TOTAL_FRAMES);
+    const totalFramesCounts = totalFramesData ? Number(totalFramesData) : 60;
+    setTotalFrames(totalFramesCounts);
+  }, []);
 
   return {
     time,
