@@ -84,11 +84,11 @@ float getDistance(vec3 p, float size) {
 
   // float easing = EaseInOutQuad( sin(PI * (time/300.0)) );
 
-  float sd1 = sdOctahedron(p + vec3(-0.3, 0.0, 0.0), size);
+  float sd1 = sdOctahedron(p + vec3(0.0, 0.0, 0.0), size);
   d = sd1;
-  float sd2 = sdSphere(p + vec3(0.3, 0.0, 0.0), size);
+  float sd2 = sdSphere(p + vec3(-1.5, 0.0, 0.0), size);
   d = min(d, sd2);
-  float sd3 = distFloor(p, 0.21);
+  float sd3 = distFloor(p, 0.5);
   d = min(d, sd3);
 
   return d;
@@ -115,7 +115,7 @@ vec3 getNormal(vec3 p, float size) {
 }
 
 float rayMarch(vec3 ro, vec3 rd) {
-  float size = 0.2;
+  float size = 0.5;
   float d;
 
   // Light Setup
@@ -166,7 +166,7 @@ float calcSoftshadow( in vec3 ro, in vec3 rd, in float mint, in float tmax ) {
 }
 
 float getLight(vec3 p) {
-  float size = 0.3;
+  float size = 0.5;
   // * sin(PI * (time/300.0))
   // Light
   vec3 lightPos = normalize(vec3(-10.0 * EaseInOutQuad( sin(PI * (time/300.0)) ), 10.0, -1.0));
@@ -184,13 +184,13 @@ float getLight(vec3 p) {
 }
 
 void main() {
-  vec2 uv = (gl_FragCoord.xy / resolution.xy - 1.0) / vec2(resolution.y / resolution.x , 1);
+  vec2 uv = (gl_FragCoord.xy * pixelRatio - resolution.xy) / min(resolution.x, resolution.y);
   vec3 col = vec3(0.);
 
   // ro: ray origin
-  vec3 ro = vec3(0.0, 1.0, 4.0);
+  vec3 ro = vec3(1.5, 2.1, -15.5);
   // rd: ray direction
-  vec3 rd = normalize(vec3(uv, 0) - ro);
+  vec3 rd = normalize(vec3(uv.x, uv.y, 1.) - ro);
   // vec3 rd = normalize(vec3(uv, -1.0 + 0.5 * length(uv)) - ro);
 
   float d = rayMarch(ro, rd);
@@ -200,6 +200,7 @@ void main() {
   col = vec3(diff);
 
   gl_FragColor = vec4(col, 1.);
+//gl_FragColor = vec4(uv, 0., 1.);
 }
 
 
