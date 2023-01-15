@@ -1,34 +1,19 @@
 import { useState, useRef, useEffect, useCallback } from "preact/hooks";
-<<<<<<< HEAD
-=======
-import { RECORDING_STATUS, RECORDING } from "./const";
->>>>>>> ac3eb05 (First commit)
-
-const TOTAL_FRAMES = 600;
+import { KEY_TOTAL_FRAMES } from "../const";
 
 // Update frame per frame
 // when drag range input, the frame update should be stopped
 export const useTimeline = () => {
   const [time, setTime] = useState(0);
-<<<<<<< HEAD
   const [recording, setRecording] = useState(false);
   const [isRunning, setIsRunning] = useState(false);
-  const [totalFrames, setTotalFrames] = useState(TOTAL_FRAMES);
-=======
-  const [recording, setRecording] = useState<RECORDING>(
-    RECORDING_STATUS.INITIAL
-  );
-  const [isRunning, setIsRunning] = useState(false);
-  const [totalFrames, setTotalFrames] = useState(TOTAL_FRAMES);
-  // const inputRef = useRef<HTMLInputElement>(null);
->>>>>>> ac3eb05 (First commit)
+  const [totalFrames, setTotalFrames] = useState(0);
   const rafRef = useRef<number>();
 
   const changeTime = useCallback(
     (e: Event) => {
       if (e.target instanceof HTMLInputElement) {
         setIsRunning(false);
-        // console.log(parseInt(e.target.value, 10));
         setTime(parseInt(e.target.value, 10));
       }
     },
@@ -47,22 +32,12 @@ export const useTimeline = () => {
         const integer =
           parseInt(e.target.value, 10) <= 0 ? 1 : parseInt(e.target.value, 10);
         setTotalFrames(integer);
+        localStorage.setItem(KEY_TOTAL_FRAMES, integer.toString());
       }
     },
     [setTotalFrames]
   );
 
-<<<<<<< HEAD
-=======
-  // useEffect(() => {
-  //   if (inputRef.current) {
-  //     // const canvas = inputRef.current;
-  //     // console.log("useEffect - canvas", canvas);
-  //     // console.log("useEffect - useTimeline", inputRef.current);
-  //   }
-  // }, [inputRef]);
-
->>>>>>> ac3eb05 (First commit)
   const loop = useCallback(() => {
     if (isRunning) {
       rafRef.current = requestAnimationFrame(loop);
@@ -71,15 +46,6 @@ export const useTimeline = () => {
           return ++prevCount;
         }
 
-<<<<<<< HEAD
-=======
-        if (recording === RECORDING_STATUS.RECORDING) {
-          setIsRunning(false);
-          setRecording(RECORDING_STATUS.RECORDED);
-          return totalFrames;
-        }
-
->>>>>>> ac3eb05 (First commit)
         return 0;
       });
     }
@@ -93,6 +59,12 @@ export const useTimeline = () => {
       }
     };
   }, [loop]);
+
+  useEffect(() => {
+    const totalFramesData = localStorage.getItem(KEY_TOTAL_FRAMES);
+    const totalFramesCounts = totalFramesData ? Number(totalFramesData) : 60;
+    setTotalFrames(totalFramesCounts);
+  }, []);
 
   return {
     time,

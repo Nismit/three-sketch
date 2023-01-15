@@ -2,7 +2,7 @@ import { useRef } from "preact/hooks";
 
 type Options = {
   fps: number;
-  duration: number;
+  frame: number;
 };
 
 type Props = {
@@ -12,7 +12,7 @@ type Props = {
   setIsRunning: (value: boolean) => void;
   setRecording: (value: boolean) => void;
   changeFrames: (e: Event) => void;
-  setRecordOptions: ({ fps, duration }: Options) => void;
+  setRecordOptions: ({ fps, frame }: Options) => void;
 };
 
 export const Download = ({
@@ -49,7 +49,7 @@ export const Download = ({
           ref={durationRef}
           type="number"
           id="duration"
-          value={recordOptions.duration}
+          value={recordOptions.frame}
         />
       </div>
       <div>
@@ -58,7 +58,7 @@ export const Download = ({
             if (fpsRef.current && durationRef.current) {
               setRecordOptions({
                 fps: parseInt(fpsRef.current.value),
-                duration: parseInt(durationRef.current.value),
+                frame: parseInt(durationRef.current.value),
               });
             }
             setIsRunning(false);

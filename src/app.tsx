@@ -1,4 +1,9 @@
-import { IconQuestionMark, IconFileDownload } from "@tabler/icons";
+import {
+  IconQuestionMark,
+  IconFileDownload,
+  IconSettings,
+} from "@tabler/icons";
+import { KEYBOARD_KEYS } from "./const";
 import { useThree } from "./hooks/useThree";
 import { useTimeline } from "./hooks/useTimeline";
 import { useEventListener } from "./hooks/useEventListener";
@@ -7,11 +12,7 @@ import { Timeline } from "./components/Timeline";
 import { Modal } from "./components/Modal";
 import { Help } from "./components/Help";
 import { Download } from "./components/Download";
-
-const SPACE_CODE = "Space";
-const SLASH_CODE = "Slash";
-const KEY_O = "KeyO";
-const KEY_D = "KeyD";
+import { Config } from "./components/Config";
 
 export function App() {
   const {
@@ -31,19 +32,29 @@ export function App() {
     toggle: downloadModalToggle,
     changeToggle: downloadModalChangeToggle,
   } = useToggle();
+  const { toggle: configModalToggle, changeToggle: configModalChangeToggle } =
+    useToggle();
 
   const keyHandler = (event: KeyboardEvent) => {
-    if (event.code === SPACE_CODE) {
+    if (event.code === KEYBOARD_KEYS.SPACE) {
       setIsRunning(!isRunning);
     }
 
-    if (event.code === SLASH_CODE || event.code === KEY_O) {
+    if (event.code === KEYBOARD_KEYS.SLASH || event.code === KEYBOARD_KEYS.O) {
       helpModalChangeToggle(!helpModalToggle);
       downloadModalChangeToggle(false);
+      configModalChangeToggle(false);
     }
 
-    if (event.code === KEY_D) {
+    if (event.code === KEYBOARD_KEYS.D) {
       downloadModalChangeToggle(!downloadModalToggle);
+      helpModalChangeToggle(false);
+      configModalChangeToggle(false);
+    }
+
+    if (event.code === KEYBOARD_KEYS.C) {
+      configModalChangeToggle(!configModalToggle);
+      downloadModalChangeToggle(false);
       helpModalChangeToggle(false);
     }
   };
@@ -51,6 +62,7 @@ export function App() {
 
   const { threeRef, recordOptions, setRecordOptions } = useThree({
     time,
+    totalFrames,
     recording,
     setRecording,
   });
@@ -72,13 +84,20 @@ export function App() {
         >
           <IconFileDownload size={19} />
         </button>
+        <button
+          className="circle_icon"
+          title="Config"
+          onClick={() => configModalChangeToggle(true)}
+        >
+          <IconSettings size={19} />
+        </button>
       </div>
       <div ref={threeRef} className="canvasContainer" />
       <Timeline
         time={time}
         totalFrames={totalFrames}
         changeTime={changeTime}
-        changeFrames={changeFrames}
+        // changeFrames={changeFrames}
       />
       <Modal isActive={helpModalToggle} toggleModal={helpModalChangeToggle}>
         <Help />
@@ -98,6 +117,14 @@ export function App() {
           changeFrames={changeFrames}
           setRecordOptions={setRecordOptions}
         />
+      </Modal>
+
+      <Modal
+        isActive={configModalToggle}
+        toggleModal={configModalChangeToggle}
+        preventClose={recording}
+      >
+        <Config totalFrames={totalFrames} changeFrames={changeFrames} />
       </Modal>
     </>
   );

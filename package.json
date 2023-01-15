@@ -2,6 +2,7 @@
   "name": "sketch",
   "private": true,
   "version": "0.0.1",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
@@ -9,17 +10,18 @@
     "save-png": "ts-node src/local.ts"
   },
   "dependencies": {
-    "@tabler/icons": "1.68.0",
-    "preact": "10.7.1",
-    "three": "0.139.2",
-    "tweakpane": "3.0.8"
+    "@tabler/icons": "1.119.0",
+    "preact": "10.11.3",
+    "three": "0.148.0",
+    "tweakpane": "3.1.1"
   },
   "devDependencies": {
-    "@preact/preset-vite": "2.2.0",
-    "@tweakpane/core": "1.0.9",
-    "@types/three": "0.139.0",
-    "ts-node": "10.7.0",
-    "typescript": "4.6.4",
-    "vite": "2.9.6"
+    "@preact/preset-vite": "2.5.0",
+    "@tweakpane/core": "1.1.1",
+    "@types/three": "0.147.1",
+    "ts-node": "10.9.1",
+    "typescript": "4.9.4",
+    "vite": "4.0.4",
+    "vite-plugin-glsl": "1.0.2"
   }
 }
