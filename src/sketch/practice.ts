@@ -1,6 +1,6 @@
 import { Vector2 } from "three";
 import { Parameter } from "../types/Parameter";
-import baseMesh from "../utils/baseMesh";
+// import baseMesh from "../utils/baseMesh";
 // import practice1 from "./practice1.frag";
 // import practice2 from "./practice2.frag";
 // import ray1 from "./ray1.frag";
@@ -16,8 +16,8 @@ import baseMesh from "../utils/baseMesh";
 // import raya from "./raya.frag";
 // import rayb from "./rayb.frag";
 // import rayc from "./rayc.frag";
-// import rayd from "./rayd.frag";
-import raye from "./raye.frag";
+import rayd from "./rayd.frag";
+// import raye from "./raye.frag";
 
 const params: Parameter[] = [
   // {
@@ -45,8 +45,8 @@ const params: Parameter[] = [
   },
 ];
 
-const practicebject = new baseMesh({
-  fragment: raye,
+const practicebject = {
+  fragment: rayd,
   uniform: {
     pixelRatio: {
       value: window.devicePixelRatio,
@@ -65,6 +65,6 @@ const practicebject = new baseMesh({
     },
   },
   parameters: params,
-});
+};
 
 export default practicebject;

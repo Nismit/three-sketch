@@ -65,7 +65,7 @@ p {
 }
 
 input[type="range"] {
-  -webkit-appearance: none;
+  appearance: none;
   width: 100%;
   border-radius: 10px;
   margin: auto;
@@ -113,10 +113,15 @@ input[type="range"]::-webkit-slider-thumb {
 .modal__container {
   width: 100%;
   max-width: 500px;
-  height: 100%;
-  max-height: 450px;
+  max-height: 100%;
+  min-height: 450px;
   background-color: #28292e;
   padding: 1rem;
+  position: relative;
+}
+
+.modal__container h2 {
+  margin-top: 0;
 }
 
 .icon_container {
@@ -145,4 +150,59 @@ input[type="range"]::-webkit-slider-thumb {
 
 .circle_icon:hover {
   background-color: hsl(230, 7%, 35%);
+}
+
+.form__download {
+  display: flex;
+  flex-direction: column;
+  gap: .9rem;
+}
+
+.form__row label {
+  font-size: 14px;
+  display: block;
+  margin-bottom: .3rem;
+}
+
+.form__row input {
+  font-size: 1rem;
+  width: 100%;
+  padding: .4rem .5rem;
+  border-radius: 5px;
+  background-color: rgb(235, 235, 235);
+  border: none;
+}
+
+.form__row select {
+  font-size: 1rem;
+  width: 100%;
+  padding: .3rem .4rem;
+  border-radius: 5px;
+  background-color: rgb(235, 235, 235);
+  border: none;
+}
+
+.button__record {
+  color: #fff;
+  width: 100%;
+  font-size: 1rem;
+  padding: .5rem .2rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  background-color: #7479a3;
+  border: 1px solid transparent;
+  border-radius: 5px;
+}
+
+.button__record:hover {
+  background-color: rgba(116, 121, 163, 0.5);
+}
+
+.indicator {
+  height: 5px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-color: #413EC1;
 }

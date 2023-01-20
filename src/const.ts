@@ -7,3 +7,5 @@ export const KEYBOARD_KEYS = {
 } as const;
 
 export const KEY_TOTAL_FRAMES = "keyTotalFrames";
+
+export const DEFAULT_TIME = 60;

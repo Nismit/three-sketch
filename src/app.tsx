@@ -60,7 +60,7 @@ export function App() {
   };
   useEventListener("keydown", keyHandler);
 
-  const { threeRef, recordOptions, setRecordOptions } = useThree({
+  const { threeRef, size, setSize, fps, setFps, progress } = useThree({
     time,
     totalFrames,
     recording,
@@ -111,11 +111,14 @@ export function App() {
         <Download
           recording={recording}
           totalFrames={totalFrames}
-          recordOptions={recordOptions}
+          fps={fps}
+          size={size}
+          progress={progress}
           setIsRunning={setIsRunning}
           setRecording={setRecording}
           changeFrames={changeFrames}
-          setRecordOptions={setRecordOptions}
+          setFps={setFps}
+          setCaptureSize={setSize}
         />
       </Modal>
 
