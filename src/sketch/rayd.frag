@@ -72,12 +72,12 @@ float getDistance(vec3 p, float size) {
   // sin(PI * (time / totalFrames) ) 0 ~ 1
   float d = 0.;
 
-  float easing = EaseInOutQuad( sin(PI * (time/300.0)) );
+  float easing = EaseInOutQuad( sin(PI * (time/60.0)) );
 
   vec3 octaPos = p + vec3(0., 0.4, 1.2);
 
   vec3 octaTranslate = translate(octaPos, vec3(0., 0.2 * easing, 0. ));
-  vec3 octaRotate = rotate(octaTranslate, radians(180.0 * float(time)/300.0), vec3(0., 1., .0));
+  vec3 octaRotate = rotate(octaTranslate, radians(90.0 * float(time)/60.0), vec3(0., 1., .0));
   float ab = sdOctahedron(octaRotate, 1.0);
 
   // d = smin(smin(d1, d2, 3.4), d3, 3.5);
@@ -141,7 +141,7 @@ float getLight(vec3 p) {
 }
 
 void main() {
-  vec2 uv = (gl_FragCoord.xy / resolution.xy - 1.0) / vec2(resolution.y / resolution.x , 1);
+  vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
   vec3 col = vec3(0.);
 
   // ro: ray origin
