@@ -2,7 +2,8 @@ import { useRef, useEffect, useState } from "preact/hooks";
 import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
 import { useEventListener } from "./useEventListener";
 // import { boxObject } from "../utils/boxObject";
-import sketch from "../sketch";
+import sketchObject from "../sketch/practice";
+import baseMesh from "../utils/baseMesh";
 
 type Props = {
   time: number;
@@ -14,6 +15,8 @@ type Props = {
 const scene = new Scene();
 const camera = new PerspectiveCamera(75, 1, 0.1, 10);
 const renderer = new WebGLRenderer();
+const captureRenderer = new WebGLRenderer();
+const sketch = new baseMesh(sketchObject);
 
 // Config
 camera.position.z = 1;
@@ -26,10 +29,9 @@ export const useThree = ({
   setRecording,
 }: Props) => {
   const threeRef = useRef<HTMLDivElement>(null);
-  const [recordOptions, setRecordOptions] = useState({
-    fps: 60,
-    frame: totalFrames,
-  });
+  const [fps, setFps] = useState(30);
+  const [size, setSize] = useState({ width: 500, height: 500 });
+  const [progress, setProgress] = useState(0);
 
   const resizeHandler = () => {
     if (threeRef.current) {
@@ -39,18 +41,116 @@ export const useThree = ({
       sketch.resolution = { x: width, y: height };
 
       renderer.setSize(width, height);
-      renderer.setPixelRatio(window.devicePixelRatio);
+      renderer.setPixelRatio(1.0);
+      // renderer.setPixelRatio(window.devicePixelRatio);
 
       camera.aspect = width / height;
       camera.updateProjectionMatrix();
     }
   };
 
-  const render = (frame?: number) => {
+  const render = () => {
     // cube.rotation.x += 0.01;
     // cube.rotation.y += 0.01;
-    sketch.time = frame ?? time;
+    sketch.time = time;
     renderer.render(scene, camera);
+  };
+
+  const captureRender = (frame: number) => {
+    sketch.time = frame;
+    captureRenderer.render(scene, camera);
+  };
+
+  const loadFFmpeg = async () => {
+    if (!("FFmpeg" in window)) {
+      console.log("Does not load FFmpeg");
+      return;
+    }
+
+    if (!("SharedArrayBuffer" in window)) {
+      console.log("Does not support SharedArrayBuffer");
+      return;
+    }
+
+    const ffmpeg = (window as any).FFmpeg.createFFmpeg({
+      log: false,
+    });
+
+    return ffmpeg;
+  };
+
+  const createPngToGif = async () => {
+    try {
+      const frames = totalFrames;
+      const framesNameLength = Math.ceil(Math.log10(frames));
+
+      const ffmpeg = await loadFFmpeg();
+      await ffmpeg.load();
+
+      ffmpeg.setProgress(({ ratio }: { ratio: number }) => {
+        // console.log("progress", ratio);
+        setProgress(ratio);
+      });
+
+      // Resize
+      captureRenderer.setSize(size.width, size.height);
+      captureRenderer.setPixelRatio(1.0);
+      sketch.resolution = { x: size.width, y: size.height };
+      camera.aspect = size.width / size.height;
+      camera.updateProjectionMatrix();
+
+      for (let i = 0; i < frames; i++) {
+        captureRender(i);
+        const frameName = i.toString().padStart(framesNameLength, "0");
+        const data = captureRenderer.domElement.toDataURL("image/png");
+        const encoded = atob(data.split(",")[1])
+          .split("")
+          .map((c) => c.charCodeAt(0));
+        ffmpeg.FS("writeFile", `tmp.${frameName}.png`, new Uint8Array(encoded));
+      }
+
+      resizeHandler();
+
+      await ffmpeg.run(
+        "-framerate",
+        `${fps}`,
+        "-pattern_type",
+        "glob",
+        "-i",
+        "*.png",
+        "-vf",
+        "scale=trunc(iw/2)*2:trunc(ih/2)*2",
+        "-pix_fmt",
+        "yuv420p",
+        "out.mp4"
+      );
+      const data = ffmpeg.FS("readFile", "out.mp4");
+
+      for (let i = 0; i < frames; i++) {
+        const frameName = i.toString().padStart(framesNameLength, "0");
+        ffmpeg.FS("unlink", `tmp.${frameName}.png`);
+      }
+
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style.display = "none";
+      const jsonURL = URL.createObjectURL(
+        new Blob([data.buffer], { type: "video/mp4" })
+      );
+      a.href = jsonURL;
+      a.download = "output.mp4";
+      a.click();
+      document.body.removeChild(a);
+    } catch (e) {
+      if (e instanceof Error) {
+        console.log("Err:", e.message);
+      } else {
+        console.log("Something went wrong", JSON.stringify(e));
+      }
+    } finally {
+      setRecording(false);
+      setProgress(0);
+    }
   };
 
   useEventListener("resize", resizeHandler);
@@ -67,8 +167,9 @@ export const useThree = ({
       if (threeRef.current) {
         sketch.dispose();
         scene.remove(sketch.mesh);
-        renderer.dispose();
         threeRef.current.removeChild(renderer.domElement);
+        renderer.dispose();
+        captureRenderer.dispose();
       }
     };
   }, [threeRef]);
@@ -77,50 +178,11 @@ export const useThree = ({
     render();
   }, [time]);
 
-  const handleSave = async (data: Blob) => {
-    try {
-      await fetch("http://localhost:8080", {
-        method: "POST",
-        mode: "cors",
-        body: data,
-      });
-    } catch (err: Error | unknown) {
-      console.log("Err:", err);
-    }
-  };
-
   useEffect(() => {
     if (recording) {
-      console.log("Options", recordOptions);
-
-      const framesData: any = {};
-      const frames = recordOptions.frame;
-      const framesNameLength = Math.ceil(Math.log10(frames));
-
-      for (let i = 0; i < frames; i++) {
-        render(i);
-        const frameName = i.toString().padStart(framesNameLength, "0");
-        framesData[frameName] = renderer.domElement.toDataURL("image/png");
-      }
-
-      const blob = new Blob([JSON.stringify(framesData)], {
-        type: "application/json",
-      });
-
-      handleSave(blob);
-
-      // const fileName = "capture.json";
-      // const a = document.createElement("a");
-      // document.body.appendChild(a);
-      // a.style.display = "none";
-      // const jsonURL = URL.createObjectURL(blob);
-      // a.href = jsonURL;
-      // a.download = fileName;
-      // a.click();
-
-      setRecording(false);
+      createPngToGif();
     }
   }, [recording]);
 
-  return { threeRef, recordOptions, setRecordOptions };
+  return { threeRef, size, setSize, fps, setFps, progress };
 };
