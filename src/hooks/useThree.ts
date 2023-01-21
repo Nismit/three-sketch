@@ -72,9 +72,16 @@ export const useThree = ({
       return;
     }
 
-    const ffmpeg = (window as any).FFmpeg.createFFmpeg({
-      log: false,
-    });
+    const option = import.meta.env.PROD
+      ? {
+          corePath: "https://unpkg.com/@ffmpeg/core@0.11.0/dist/ffmpeg-core.js",
+          log: false,
+        }
+      : {
+          log: true,
+        };
+
+    const ffmpeg = (window as any).FFmpeg.createFFmpeg(option);
 
     return ffmpeg;
   };

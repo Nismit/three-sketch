@@ -48,10 +48,15 @@ export const Download = ({
     setFps(newValue);
   };
 
+  const onHandleSubmit = (e: any) => {
+    e.preventDefault();
+    return false;
+  };
+
   return (
     <div>
       <h2>Download</h2>
-      <form className="form__download">
+      <form className="form__download" onSubmit={onHandleSubmit}>
         <div className="form__row">
           <label for="frames">Frames (Override)</label>
           <input
