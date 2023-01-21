@@ -2,7 +2,7 @@ import {
   IconQuestionMark,
   IconFileDownload,
   IconSettings,
-} from "@tabler/icons";
+} from "@tabler/icons-preact";
 import { KEYBOARD_KEYS } from "./const";
 import { useThree } from "./hooks/useThree";
 import { useTimeline } from "./hooks/useTimeline";
