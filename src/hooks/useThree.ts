@@ -95,7 +95,6 @@ export const useThree = ({
       await ffmpeg.load();
 
       ffmpeg.setProgress(({ ratio }: { ratio: number }) => {
-        // console.log("progress", ratio);
         setProgress(ratio);
       });
 

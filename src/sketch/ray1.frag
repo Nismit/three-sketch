@@ -11,8 +11,7 @@ float sphere(vec3 p) {
 }
 
 void main() {
-  vec2 p = (gl_FragCoord.xy / resolution.xy) - 1.0;
-  p.x *= resolution.x / resolution.y;
+  vec2 p = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
 
   // ro: ray origin
   // vec3 ro = vec3(0, 0, 0.01);
