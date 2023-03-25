@@ -126,7 +126,7 @@ float getLight(vec3 p) {
 }
 
 void main() {
-  vec2 uv = (gl_FragCoord.xy / resolution.xy - 1.0) / vec2(resolution.y / resolution.x , 1);
+  vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
   vec3 col = vec3(0.);
 
   // ro: ray origin

@@ -5,6 +5,11 @@
     {
       "matchPackagePatterns": ["@types"],
       "groupName": "types"
+    },
+    {
+      "matchPackagePatterns": ["tweakpane"],
+      "groupName": "tweakpane"
     }
-  ]
+  ],
+  "rangeStrategy": "replace"
 }
