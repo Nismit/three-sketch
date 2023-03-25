@@ -6,5 +6,6 @@
       "matchPackagePatterns": ["@types"],
       "groupName": "types"
     }
-  ]
+  ],
+  "rangeStrategy": "replace"
 }
