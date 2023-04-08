@@ -20,7 +20,12 @@ import { Parameter } from "../types/Parameter";
 // import ray from "./rayd.frag";
 // import ray from "./raye.frag";
 // Phong Reflect + Soft Shadow
-import ray from "./rayf.frag";
+// import ray from "./rayf.frag";
+// Emission sphere
+// import ray from "./rayg.frag";
+// Raymarching Basic
+// Soft shadow + AO + Point Light (w/ Normal shadow)
+import ray from "./rayh.frag";
 
 const params: Parameter[] = [
   {
@@ -67,6 +72,18 @@ const params: Parameter[] = [
       },
     },
   },
+  {
+    emissionThreshold: {
+      value: 5.0,
+    },
+    config: { min: 0, max: 10.0, step: 0.01 },
+  },
+  {
+    emissionPower: {
+      value: -5.0,
+    },
+    config: { min: -5.0, max: 0.0, step: 1.0 },
+  },
 ];
 
 const practicebject = {
@@ -86,6 +103,12 @@ const practicebject = {
     },
     camPos: {
       value: new Vector3(0.001, 1.5, -4.0),
+    },
+    emissionThreshold: {
+      value: 5.0,
+    },
+    emissionPower: {
+      value: -5.0,
     },
   },
   parameters: params,
