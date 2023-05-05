@@ -27,6 +27,9 @@ import { Parameter } from "../types/Parameter";
 // Soft shadow + AO + Point Light (w/ Normal shadow)
 import ray from "./rayh.frag";
 
+// fbm
+// import ray from "./fbm.frag";
+
 const params: Parameter[] = [
   {
     lightPos: {
