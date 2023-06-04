@@ -2,8 +2,8 @@ import { useRef, useEffect, useState } from "preact/hooks";
 import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
 import { useEventListener } from "./useEventListener";
 // import { boxObject } from "../utils/boxObject";
-import sketchObject from "../sketch/practice";
-// import sketchObject from "../sketch/fbm";
+// import sketchObject from "../sketch/practice";
+import sketchObject from "../sketch/fbm";
 import baseMesh from "../utils/baseMesh";
 
 type Props = {
