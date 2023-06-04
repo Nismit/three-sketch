@@ -1,7 +1,8 @@
 // import baseMesh from "../utils/baseMesh";
 // import mainFragment from "./fragment.frag";
-// import fbmFragment from "./fbm.frag";
 
-import practicebject from "./practice";
+// import practiceObject from "./practice";
+// export default practiceObject;
 
-export default practicebject;
+import fbmObject from "./fbm";
+export default fbmObject;
