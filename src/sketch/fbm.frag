@@ -7,8 +7,8 @@ uniform vec2 fbmParam2;
 uniform vec3 fbmColor1;
 uniform vec3 fbmColor2;
 
-// const mat2 m = mat2(-0.19, 0.175, -1.724, 0.296);
-const mat2 m = mat2(0.3, 0.98, 0.059, 0.707);
+const mat2 m = mat2(-0.19, 0.575, -1.924, 0.296);
+// const mat2 m = mat2(0.3, 0.98, 0.159, 0.707);
 // const mat2 m = mat2( 0.80,  0.60, -0.60,  0.80 );
 
 float noise( vec2 p ) {
@@ -70,7 +70,8 @@ float fbm6(vec2 p) {
 // }
 
 float domainWarp( vec2 p, out vec4 u) {
-  p *= 1.5;
+  // p *= 2.0;
+  p /= 4.0;
 
   // vec2 xu = vec2(fbm6(p + vec2(-12.)), fbm3(p + vec2(10.)));
   vec2 xu = vec2(fbm6(p + fbmParam1), fbm3(p));
@@ -92,7 +93,7 @@ void main( void ) {
 
   vec3 col = vec3(0.0);
   col = mix(
-    vec3(0.851,0.424,0.78),
+    vec3(0.286,0.694,0.949),
     vec3(0.949,0.882,0.682),
     d
   );
@@ -112,7 +113,7 @@ void main( void ) {
   col = mix(
     col,
     vec3(0.99,0.99,0.99),
-    dot(ou.zw, ou.zw)
+    dot(ou.zw * 1.2, ou.zw * 1.5)
   );
 
   gl_FragColor = vec4(col, 1.);
