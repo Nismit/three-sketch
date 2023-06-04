@@ -11,6 +11,7 @@ type Props = {
   changeFrames: (e: Event) => void;
   setFps: (value: number) => void;
   setCaptureSize: (value: Record<"width" | "height", number>) => void;
+  setScreenshot: (value: boolean) => void;
 };
 
 export const Download = ({
@@ -24,6 +25,7 @@ export const Download = ({
   changeFrames,
   setFps,
   setCaptureSize,
+  setScreenshot,
 }: Props) => {
   const onChangeSize = (e: JSXInternal.TargetedEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -46,6 +48,13 @@ export const Download = ({
     const target = e.target as HTMLInputElement;
     const newValue = Number(target.value);
     setFps(newValue);
+  };
+
+  const onChangeScreenshot = (
+    e: JSXInternal.TargetedEvent<HTMLInputElement>
+  ) => {
+    const target = e.target as HTMLInputElement;
+    setScreenshot(target.checked);
   };
 
   const onHandleSubmit = (e: any) => {
@@ -113,6 +122,17 @@ export const Download = ({
               min="1"
               value={fps}
               onInput={onChangeFps}
+            />
+          </div>
+        </div>
+        <div>
+          <div className="form__row">
+            <label for="screenshot">Take Screenshot</label>
+            <input
+              type="checkbox"
+              id="screenshot"
+              value="screenshot"
+              onInput={onChangeScreenshot}
             />
           </div>
         </div>

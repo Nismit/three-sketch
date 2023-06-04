@@ -3,6 +3,7 @@ import { Scene, PerspectiveCamera, WebGLRenderer } from "three";
 import { useEventListener } from "./useEventListener";
 // import { boxObject } from "../utils/boxObject";
 import sketchObject from "../sketch/practice";
+// import sketchObject from "../sketch/fbm";
 import baseMesh from "../utils/baseMesh";
 
 type Props = {
@@ -32,6 +33,7 @@ export const useThree = ({
   const [fps, setFps] = useState(30);
   const [size, setSize] = useState({ width: 500, height: 500 });
   const [progress, setProgress] = useState(0);
+  const [isScreenshot, setScreenshot] = useState(false);
 
   const resizeHandler = () => {
     if (threeRef.current) {
@@ -159,6 +161,34 @@ export const useThree = ({
     }
   };
 
+  const takeScreenshot = () => {
+    // Resize
+    captureRenderer.setSize(size.width, size.height);
+    captureRenderer.setPixelRatio(1.0);
+    sketch.resolution = { x: size.width, y: size.height };
+    camera.aspect = size.width / size.height;
+    camera.updateProjectionMatrix();
+
+    captureRender(time);
+
+    captureRenderer.domElement.toBlob((blob) => {
+      if (blob === null) {
+        return;
+      }
+
+      const a = document.createElement("a");
+      document.body.appendChild(a);
+      a.style.display = "none";
+      a.href = URL.createObjectURL(blob);
+      a.download = "capture.png";
+      a.click();
+      document.body.removeChild(a);
+
+      setRecording(false);
+      setProgress(0);
+    });
+  };
+
   useEventListener("resize", resizeHandler);
 
   useEffect(() => {
@@ -185,10 +215,14 @@ export const useThree = ({
   }, [time]);
 
   useEffect(() => {
-    if (recording) {
+    if (recording && !isScreenshot) {
       createPngToGif();
+    }
+
+    if (recording && isScreenshot) {
+      takeScreenshot();
     }
   }, [recording]);
 
-  return { threeRef, size, setSize, fps, setFps, progress };
+  return { threeRef, size, setSize, fps, setFps, progress, setScreenshot };
 };

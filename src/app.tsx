@@ -60,12 +60,13 @@ export function App() {
   };
   useEventListener("keydown", keyHandler);
 
-  const { threeRef, size, setSize, fps, setFps, progress } = useThree({
-    time,
-    totalFrames,
-    recording,
-    setRecording,
-  });
+  const { threeRef, size, setSize, fps, setFps, progress, setScreenshot } =
+    useThree({
+      time,
+      totalFrames,
+      recording,
+      setRecording,
+    });
 
   return (
     <>
@@ -119,6 +120,7 @@ export function App() {
           changeFrames={changeFrames}
           setFps={setFps}
           setCaptureSize={setSize}
+          setScreenshot={setScreenshot}
         />
       </Modal>
 
