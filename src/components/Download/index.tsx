@@ -40,6 +40,11 @@ export const Download = ({
       return;
     }
 
+    if (target.value === "2k") {
+      setCaptureSize({ width: 2048, height: 1080 });
+      return;
+    }
+
     const newValue = Number(target.value);
     setCaptureSize({ width: newValue, height: newValue });
   };
@@ -83,6 +88,7 @@ export const Download = ({
             <option value="1000">1000x1000</option>
             <option value="1024">1024x1024</option>
             <option value="2000">2000x2000</option>
+            <option value="2k">2048x1080</option>
             <option value="2048">2048x2048</option>
           </select>
         </div>
