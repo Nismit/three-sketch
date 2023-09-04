@@ -7,7 +7,7 @@ const params: Parameter[] = [
     fbmParam1: {
       value: { x: 0.0, y: 0.0 },
     },
-    config: { min: 0.0, max: 100.0, step: 1.0 },
+    config: { min: -10.0, max: 10.0, step: 0.001 },
   },
   {
     fbmParam2: {
