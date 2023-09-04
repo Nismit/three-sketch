@@ -66,7 +66,7 @@ export default class baseMesh {
         );
         if (values === undefined) return;
         const newParam = { [key]: values };
-        this._pane.addInput(newParam, key, parameter.config);
+        this._pane.addBinding(newParam, key, parameter.config);
         this._pane.on("change", (ev) => {
           // console.log("changed:", ev.value);
           this._uniform[key].value = ev.value;
