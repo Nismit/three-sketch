@@ -4,8 +4,8 @@
 // import practiceObject from "./practice";
 // export default practiceObject;
 
-// import fbmObject from "./fbm";
-// export default fbmObject;
+import fbmObject from "./fbm";
+export default fbmObject;
 
-import light2dObject from "./light2d";
-export default light2dObject;
+// import light2dObject from "./light2d";
+// export default light2dObject;

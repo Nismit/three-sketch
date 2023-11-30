@@ -9,6 +9,12 @@ uniform vec3 fbmColor2;
 
 const mat2 m = mat2(0.5, 0.60, -0.60, 0.80 );
 
+vec3 hsv2rgb( in vec3 c ) {
+  vec3 rgb = clamp( abs(mod(c.x*6.0+vec3(0.0,4.0,2.0),6.0)-3.0)-1.0, 0.0, 1.0 );
+	rgb = rgb*rgb*(3.0-2.0*rgb); // cubic smoothing
+	return c.z * mix( vec3(1.0), rgb, c.y);
+}
+
 float noise( vec2 p ) {
   return sin(p.x) * sin(p.y);
 }
@@ -74,9 +80,9 @@ float domainWarp( vec2 p, out vec4 u) {
 
   p += p * fbmParam1;
 
-  p += 0.03*sin( vec2(0.27, 0.23) * time + length(p)*vec2(4.1,4.3));
+  p += 0.03 * sin( vec2(0.27, 0.23) * time + length(p)*vec2(4.1, 4.3));
 
-	vec2 o = fbm4_2( 0.9*p );
+	vec2 o = vec2( fbmParam1 + fbm4_2( 1.0 * p ) );
 
   o += 0.06 * sin( vec2(0.15, 0.09)*time + length(o));
 
@@ -97,10 +103,10 @@ void main( void ) {
 
   vec3 col = vec3(0.0);
   col = mix(
-    vec3(-0.299,0.999,0.149),
-    // vec3(1.0),
-    vec3(0.359,0.49,0.722),
-    d
+    vec3(0.22,0.02,0.949),
+    // vec3(0.8,0.733,0.949),
+    vec3(0.129,0.749,0.573),
+    d * d
   );
 
   // col = mix(
@@ -117,13 +123,13 @@ void main( void ) {
 
   col = mix(
     col,
-    vec3(0.0786,0.0865,0.0976),
+    vec3(0.533,0.341,0.949),
     // dot(abs(ou.zw), abs(ou.zw) * 1.0)
     dot(ou.zw, ou.zw)
     // smoothstep(0.2, 5.8, abs(ou.z)+abs(ou.w))
   );
 
-  col = 1.5 * col;
+  col = 1. * col;
 
   gl_FragColor = vec4(col, 1.);
 }
